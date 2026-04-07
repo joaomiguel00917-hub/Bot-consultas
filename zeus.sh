@@ -1,233 +1,346 @@
 #!/bin/bash
-# ZEUS HUB v1.3 - Painel completo
-# Autor: Cypherlock & Erro404
-# Data: 2026-04-07
 
-# ===== Cores =====
+# =========================
+# ZEUS SEARCH v3.3 FULL
+# =========================
+
 RED="\033[1;31m"
 GREEN="\033[1;32m"
 YELLOW="\033[1;33m"
-BLUE="\033[1;34m"
-CYAN="\033[1;36m"
-MAGENTA="\033[1;35m"
 RESET="\033[0m"
+CYAN="\033[1;36m"
 
-# ===== LOGIN =====
-
-USER_LOGIN="cypherlock"
-PASS_LOGIN="zeus@123"
-
-login() {
-
-clear
-
-echo -e "${CYAN}"
-echo "🔐 LOGIN ZEUS"
-echo -e "${RESET}"
-
-read -p "Usuário: " user
-read -s -p "Senha: " pass
-echo ""
-
-if [[ "$user" == "$USER_LOGIN" && "$pass" == "$PASS_LOGIN" ]]; then
-
-echo -e "${GREEN}Acesso permitido${RESET}"
-sleep 1
-
-else
-
-echo -e "${RED}Usuário ou senha incorretos${RESET}"
-sleep 2
-login
-
-fi
-
-}
-
-# ===== Chaves =====
+LOG="logs.txt"
 CPF_KEY="a226a8a6d4b5eab60686baab5a424d4cf3a25d0c6f9e72172eb99cfc6de3b5a6"
 
-# ===== Funções =====
-
-linha_animada() {
-    for i in {1..50}; do
-        echo -ne "${RED}─${RESET}"
-        sleep 0.01
+# =========================
+# BOOT
+# =========================
+boot() {
+    clear
+    echo -e "${RED}"
+    echo "Inicializando ZEUS..."
+    for i in 10 30 50 70 90 100; do
+        echo -ne "Carregando: $i% \r"
+        sleep 0.4
     done
-    echo ""
+    sleep 1
 }
 
-digitar() {
-    texto=$1
-    cor=$2
-    for ((i=0; i<${#texto}; i++)); do
-        echo -ne "${cor}${texto:$i:1}${RESET}"
-        sleep 0.05
-    done
-    echo ""
+# =========================
+# LOG
+# =========================
+logar() {
+    echo "$(date) | $1" >> $LOG
 }
 
-loading_menu() {
-    echo -ne "${CYAN}Carregando ZEUS CONULTAS"
-    for i in {1..5}; do
-        echo -ne "."
-        sleep 0.3
+# =========================
+# LOGIN USERS.TXT
+# =========================
+login() {
+    while true; do
+        clear
+        echo -e "${RED}🔐 LOGIN ZEUS SEARCH${RESET}"
+        read -p "Usuário: " user
+        read -s -p "Senha: " pass
+        echo ""
+        if grep -q "^$user:$pass$" users.txt; then
+            echo -e "${GREEN}Acesso permitido${RESET}"
+            logar "LOGIN OK - $user"
+            sleep 1
+            break
+        else
+            echo -e "${RED}Login inválido${RESET}"
+            logar "LOGIN FAIL - $user"
+            sleep 2
+        fi
     done
-    echo ""
-    sleep 0.2
 }
 
+# =========================
+# CRIAR USUÁRIO
+# =========================
+criar_usuario() {
+    read -p "Novo usuário: " user
+    read -p "Nova senha: " pass
+    echo "$user:$pass" >> users.txt
+    echo -e "${RED}Usuário criado${RESET}"
+    logar "NOVO USER - $user"
+    read -p "Enter..."
+}
+
+# =========================
+# BANNER
+# =========================
 banner() {
     clear
-    linha_animada
-    digitar "CONSULTAS ZEUS" $YELLOW
-    digitar "Desenvolvido por [Cypherlock] e [ERRO404]" $CYAN
-    linha_animada
+    echo -e "${RED}"
+    echo "        <^\()/^>"
+    echo "         \/  \/"
+    echo "          /  \\"
+    echo "          \`\`\`"
     echo ""
-
-    echo -e "${CYAN}███████╗███████╗██╗   ██╗███████╗${RESET}"
-    echo -e "${CYAN}╚══███╔╝██╔════╝██║   ██║██╔════╝${RESET}${BLUE}  ██║   ██║██╔════╝${RESET}"
-    echo -e "${CYAN}  ███╔╝ █████╗  ██║   ██║███████╗${RESET}${BLUE}  ██║   ██║███████╗${RESET}"
-    echo -e "${CYAN} ███╔╝  ██╔══╝  ██║   ██║╚════██║${RESET}${BLUE}  ██║   ██║╚════██║${RESET}"
-    echo -e "${CYAN}███████╗███████╗╚██████╔╝███████║${RESET}${BLUE}╚██████╔╝███████║${RESET}"
-    echo -e "${CYAN}╚══════╝╚══════╝ ╚═════╝ ╚══════╝${RESET}${BLUE} ╚═════╝ ╚══════╝${RESET}"
-    echo -e "${YELLOW}📡 ZEUS CONSULTAS 📡t.me/DENVOLVEDORZEUS ${RESET}"
-    linha_animada
+    echo "███████╗███████╗██╗   ██╗███████╗"
+    echo "╚══███╔╝██╔════╝██║   ██║██╔════╝"
+    echo "  ███╔╝ █████╗  ██║   ██║███████╗"
+    echo " ███╔╝  ██╔══╝  ██║   ██║╚════██║"
+    echo "███████╗███████╗╚██████╔╝███████║"
+    echo "╚══════╝╚══════╝ ╚═════╝ ╚══════╝"
+    echo ""
+    echo "👼 ZEUS SEARCH v3 [PoweredBy & cypherlock & erro404]"
+    echo ""
 }
 
-# ===== TEMPLATE DISCORD =====
-
-gerar_template() {
-
-echo ""
-echo -e "${CYAN}GERADOR TEMPLATE DISCORD${RESET}"
-echo ""
-
-read -p "Cole o link do servidor: " link
-
-codigo=$(echo "$link" | awk -F'/' '{print $NF}')
-
-if [[ -z "$codigo" ]]; then
-
-echo -e "${RED}Link inválido${RESET}"
-
-else
-
-template="https://discord.new/$codigo"
-
-echo ""
-echo -e "${GREEN}Template gerado:${RESET}"
-echo "$template"
-
-fi
-
-echo ""
-read -p "Enter para voltar..."
-
+# =========================
+# JSON CHECK
+# =========================
+exibir_json() {
+    if command -v jq &>/dev/null; then
+        echo "$1" | jq
+    else
+        echo -e "${YELLOW}⚠ jq não encontrado. Mostrando JSON cru:${RESET}"
+        echo "$1"
+    fi
 }
 
-# ===== Geradores =====
+# =========================
+# CONSULTAS COMPLETAS
+# =========================
+consulta_cpf() {
+    read -p "CPF: " cpf
+    result=$(curl -s -X GET "https://apicpf.com/api/consulta?cpf=$cpf" -H "X-API-KEY: $CPF_KEY")
+    exibir_json "$result"
+    logar "CPF $cpf"
+    read -p "Enter..."
+}
 
+consulta_cnpj() {
+    read -p "CNPJ: " cnpj
+    result=$(curl -s "https://brasilapi.com.br/api/cnpj/v1/$cnpj")
+    exibir_json "$result"
+    logar "CNPJ $cnpj"
+    read -p "Enter..."
+}
+
+consulta_telefone() {
+    read -p "Telefone (+55DDDNUM): " tel
+    read -p "API Key AbstractAPI: " chave
+    result=$(curl -s "https://phonevalidation.abstractapi.com/v1/?api_key=$chave&phone=$tel")
+    exibir_json "$result"
+    logar "TELEFONE $tel"
+    read -p "Enter..."
+}
+
+consulta_cep() {
+    read -p "CEP: " cep
+    result=$(curl -s "https://cep.awesomeapi.com.br/json/$cep")
+    exibir_json "$result"
+    logar "CEP $cep"
+    read -p "Enter..."
+}
+
+consulta_ddd() {
+    read -p "DDD: " ddd
+    result=$(curl -s "https://brasilapi.com.br/api/ddd/v1/$ddd")
+    exibir_json "$result"
+    logar "DDD $ddd"
+    read -p "Enter..."
+}
+
+consulta_ip() {
+    read -p "IP: " ip
+    result=$(curl -s "http://ip-api.com/json/$ip")
+    exibir_json "$result"
+    logar "IP $ip"
+    read -p "Enter..."
+}
+
+consulta_ip_detalhado() {
+    read -p "IP: " ip
+    result=$(curl -s "https://ipinfo.io/$ip/json")
+    exibir_json "$result"
+    logar "IP DETALHADO $ip"
+    read -p "Enter..."
+}
+
+consulta_whois() {
+    read -p "Domínio: " dom
+    result=$(curl -s "https://api.apilayer.com/whois?domain=$dom&apikey=$CPF_KEY")
+    exibir_json "$result"
+    logar "WHOIS $dom"
+    read -p "Enter..."
+}
+
+consulta_dns() {
+    read -p "Domínio: " dom
+    nslookup $dom
+    logar "DNS $dom"
+    read -p "Enter..."
+}
+
+ping_host() {
+    read -p "IP ou domínio: " ip
+    ping -c 4 $ip
+    logar "PING $ip"
+    read -p "Enter..."
+}
+
+scanner_portas() {
+    read -p "IP: " ip
+    echo "Escaneando..."
+    for p in 21 22 23 25 53 80 110 143 443 3306 8080; do
+        nc -z -w1 $ip $p 2>/dev/null && echo "Porta aberta: $p"
+    done
+    logar "SCAN $ip"
+    read -p "Enter..."
+}
+
+traceroute_host() {
+    read -p "IP: " ip
+    traceroute $ip
+    logar "TRACEROUTE $ip"
+    read -p "Enter..."
+}
+
+subdomain_fake() {
+    read -p "Domínio: " dom
+    echo "www.$dom"
+    echo "mail.$dom"
+    echo "api.$dom"
+    echo "dev.$dom"
+    logar "SUBDOMAIN $dom"
+    read -p "Enter..."
+}
+
+# =========================
+# GERADORES COMPLETOS
+# =========================
 gerar_cpf() {
-    n1=$((RANDOM%10)); n2=$((RANDOM%10)); n3=$((RANDOM%10))
-    n4=$((RANDOM%10)); n5=$((RANDOM%10)); n6=$((RANDOM%10))
-    n7=$((RANDOM%10)); n8=$((RANDOM%10)); n9=$((RANDOM%10))
-    d1=$(( (10*n1+9*n2+8*n3+7*n4+6*n5+5*n6+4*n7+3*n8+2*n9)%11 ))
-    [ $d1 -ge 10 ] && d1=0
-    d2=$(( (11*n1+10*n2+9*n3+8*n4+7*n5+6*n6+5*n7+4*n8+3*n9+2*d1)%11 ))
-    [ $d2 -ge 10 ] && d2=0
-    echo "$n1$n2$n3.$n4$n5$n6.$n7$n8$n9-$d1$d2"
+    echo "$((RANDOM%900+100)).$((RANDOM%900+100)).$((RANDOM%900+100))-$((RANDOM%90+10))"
+    logar "CPF GERADO"
+    read -p "Enter..."
 }
 
 gerar_cnpj() {
-    n1=$((RANDOM%10)); n2=$((RANDOM%10)); n3=$((RANDOM%10)); n4=$((RANDOM%10))
-    n5=$((RANDOM%10)); n6=$((RANDOM%10)); n7=$((RANDOM%10)); n8=$((RANDOM%10))
-    n9=$((RANDOM%10)); n10=$((RANDOM%10)); n11=$((RANDOM%10)); n12=$((RANDOM%10))
-    d1=$(( (5*n1+4*n2+3*n3+2*n4+9*n5+8*n6+7*n7+6*n8+5*n9+4*n10+3*n11+2*n12)%11 ))
-    [ $d1 -ge 10 ] && d1=0
-    d2=$(( (6*n1+5*n2+4*n3+3*n4+2*n5+9*n6+8*n7+7*n8+6*n9+5*n10+4*n11+3*n12+2*d1)%11 ))
-    [ $d2 -ge 10 ] && d2=0
-    echo "$n1$n2.$n3$n4$n5.$n6$n7$n8/$n9$n10$n11$n12-$d1$d2"
+    echo "$((RANDOM%90+10)).$((RANDOM%900+100)).$((RANDOM%900+100))/$((RANDOM%9000+1000))-$((RANDOM%90+10))"
+    logar "CNPJ GERADO"
+    read -p "Enter..."
 }
 
 gerar_rg() {
-    read -p "Digite a base RG: " rg
+    read -p "Base RG: " rg
     echo "$rg-$(($RANDOM%9999))"
+    logar "RG GERADO"
+    read -p "Enter..."
 }
 
 gerar_senha() {
-    if command -v openssl >/dev/null 2>&1; then
-        openssl rand -base64 12
-    else
-        echo -e "${RED}OpenSSL não encontrado. Instale com: pkg install openssl${RESET}"
-    fi
+    # Substituindo openssl por /dev/urandom
+    senha=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 12)
+    echo "$senha"
+    logar "SENHA GERADA"
+    read -p "Enter..."
 }
 
-check_ip() {
-    ip=$1
-    ping -c 1 $ip &>/dev/null
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}IP ativo${RESET}"
-        return 0
-    else
-        echo -e "${RED}IP inativo ou bloqueado${RESET}"
-        return 1
-    fi
+gerar_username() {
+    read -p "Nome base: " nome
+    user="${nome}$(($RANDOM%9999))"
+    echo "$user"
+    logar "USERNAME GERADO"
+    read -p "Enter..."
 }
 
-# ===== INICIAR LOGIN =====
+# =========================
+# UTILIDADES
+# =========================
+gerar_template() {
+    read -p "Link Discord: " link
+    codigo=$(echo "$link" | awk -F'/' '{print $NF}')
+    echo "https://discord.new/$codigo"
+    logar "TEMPLATE GERADO"
+    read -p "Enter..."
+}
 
+salvar_texto() {
+    read -p "Texto: " txt
+    echo "$txt" >> dados.txt
+    logar "TEXTO SALVO"
+    read -p "Enter..."
+}
+
+atualizar_script() {
+    git pull
+    logar "ATUALIZADO"
+    read -p "Enter..."
+}
+
+# =========================
+# EXECUÇÃO
+# =========================
+boot
 login
 
-# ===== Loop do Menu =====
 while true; do
-    loading_menu
     banner
 
-    echo -e "${CYAN}===== CONSULTAS =====${RESET}"
-    echo "[01] CPF"
-    echo "[02] CNPJ"
-    echo "[03] RG (simulado)"
-    echo "[04] Telefone"
-    echo "[05] CEP"
+    echo "[01] Consulta CPF"
+    echo "[02] Consulta CNPJ"
+    echo "[03] Telefone"
+    echo "[04] CEP"
+    echo "[05] DDD"
     echo "[06] IP"
-    echo "[07] DDD"
-    echo "[08] Whois"
+    echo "[07] IP Detalhado"
+    echo "[08] WHOIS"
     echo "[09] DNS"
-    echo "[10] Ping"
-    echo "[11] Port Check"
-    echo "[12] Username Generator"
 
     echo ""
-    echo -e "${YELLOW}===== GERADORES =====${RESET}"
+    echo "[10] Ping"
+    echo "[11] Scanner Portas"
+    echo "[12] Traceroute"
+    echo "[13] Subdomain"
+
+    echo ""
     echo "[21] Gerar CPF"
     echo "[22] Gerar CNPJ"
     echo "[23] Gerar RG"
-    echo "[24] Gerar senha forte"
+    echo "[24] Gerar Senha"
+    echo "[25] Gerar Username"
 
     echo ""
-    echo -e "${GREEN}===== UTILIDADES =====${RESET}"
-    echo "[31] Traceroute"
-    echo "[32] Subdomain Finder"
-    echo "[33] Salvar resultado"
-    echo "[34] Gerar Template Discord"
+    echo "[31] Gerar Template"
+    echo "[32] Salvar Texto"
 
     echo ""
-    echo -e "${RED}===== SISTEMA =====${RESET}"
-    echo "[96] Atualizar"
-    echo "[97] Contato"
+    echo "[90] Criar Usuário"
+    echo "[96] Atualizar Script"
     echo "[99] Sair"
 
-    read -p "Escolha uma opção: " opcao
+    read -p "Escolha: " op
 
-    case $opcao in
-
-        34) gerar_template;;
-
-        99) exit;;
-
-        *) echo -e "${RED}Opção inválida${RESET}"; read -p "Enter...";;
-
+    case $op in
+        01) consulta_cpf ;;
+        02) consulta_cnpj ;;
+        03) consulta_telefone ;;
+        04) consulta_cep ;;
+        05) consulta_ddd ;;
+        06) consulta_ip ;;
+        07) consulta_ip_detalhado ;;
+        08) consulta_whois ;;
+        09) consulta_dns ;;
+        10) ping_host ;;
+        11) scanner_portas ;;
+        12) traceroute_host ;;
+        13) subdomain_fake ;;
+        21) gerar_cpf ;;
+        22) gerar_cnpj ;;
+        23) gerar_rg ;;
+        24) gerar_senha ;;
+        25) gerar_username ;;
+        31) gerar_template ;;
+        32) salvar_texto ;;
+        90) criar_usuario ;;
+        96) atualizar_script ;;
+        99) exit ;;
+        *) echo -e "${RED}Opção inválida${RESET}" ; sleep 1 ;;
     esac
-
 done
