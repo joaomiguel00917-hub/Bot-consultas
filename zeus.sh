@@ -1,6 +1,6 @@
 #!/bin/bash
 # ZEUS HUB v1.3 - Painel completo
-# Autor: Kyara & Erro404
+# Autor: Cypherlock & Erro404
 # Data: 2026-04-07
 
 # ===== Cores =====
@@ -12,12 +12,43 @@ CYAN="\033[1;36m"
 MAGENTA="\033[1;35m"
 RESET="\033[0m"
 
+# ===== LOGIN =====
+
+USER_LOGIN="cypherlock"
+PASS_LOGIN="zeus@123"
+
+login() {
+
+clear
+
+echo -e "${CYAN}"
+echo "🔐 LOGIN ZEUS"
+echo -e "${RESET}"
+
+read -p "Usuário: " user
+read -s -p "Senha: " pass
+echo ""
+
+if [[ "$user" == "$USER_LOGIN" && "$pass" == "$PASS_LOGIN" ]]; then
+
+echo -e "${GREEN}Acesso permitido${RESET}"
+sleep 1
+
+else
+
+echo -e "${RED}Usuário ou senha incorretos${RESET}"
+sleep 2
+login
+
+fi
+
+}
+
 # ===== Chaves =====
 CPF_KEY="a226a8a6d4b5eab60686baab5a424d4cf3a25d0c6f9e72172eb99cfc6de3b5a6"
 
 # ===== Funções =====
 
-# Linha animada
 linha_animada() {
     for i in {1..50}; do
         echo -ne "${RED}─${RESET}"
@@ -26,7 +57,6 @@ linha_animada() {
     echo ""
 }
 
-# Digitar efeito
 digitar() {
     texto=$1
     cor=$2
@@ -37,9 +67,8 @@ digitar() {
     echo ""
 }
 
-# Loading antes do menu
 loading_menu() {
-    echo -ne "${CYAN}Carregando ZEUS HUB"
+    echo -ne "${CYAN}Carregando ZEUS CONULTAS"
     for i in {1..5}; do
         echo -ne "."
         sleep 0.3
@@ -48,27 +77,57 @@ loading_menu() {
     sleep 0.2
 }
 
-# Banner ZEUS com sombra
 banner() {
     clear
     linha_animada
-    digitar "CONSULTAS ZEUS TERMINAL" $YELLOW
-    digitar "Desenvolvido por [KYARA] e [ERRO404]" $CYAN
+    digitar "CONSULTAS ZEUS" $YELLOW
+    digitar "Desenvolvido por [Cypherlock] e [ERRO404]" $CYAN
     linha_animada
     echo ""
 
-    # Banner ZEUS
     echo -e "${CYAN}███████╗███████╗██╗   ██╗███████╗${RESET}"
     echo -e "${CYAN}╚══███╔╝██╔════╝██║   ██║██╔════╝${RESET}${BLUE}  ██║   ██║██╔════╝${RESET}"
     echo -e "${CYAN}  ███╔╝ █████╗  ██║   ██║███████╗${RESET}${BLUE}  ██║   ██║███████╗${RESET}"
     echo -e "${CYAN} ███╔╝  ██╔══╝  ██║   ██║╚════██║${RESET}${BLUE}  ██║   ██║╚════██║${RESET}"
     echo -e "${CYAN}███████╗███████╗╚██████╔╝███████║${RESET}${BLUE}╚██████╔╝███████║${RESET}"
     echo -e "${CYAN}╚══════╝╚══════╝ ╚═════╝ ╚══════╝${RESET}${BLUE} ╚═════╝ ╚══════╝${RESET}"
-    echo -e "${YELLOW}🔥 ZEUS HUB - Termux 🔥${RESET}"
+    echo -e "${YELLOW}📡 ZEUS CONSULTAS 📡t.me/DENVOLVEDORZEUS ${RESET}"
     linha_animada
 }
 
+# ===== TEMPLATE DISCORD =====
+
+gerar_template() {
+
+echo ""
+echo -e "${CYAN}GERADOR TEMPLATE DISCORD${RESET}"
+echo ""
+
+read -p "Cole o link do servidor: " link
+
+codigo=$(echo "$link" | awk -F'/' '{print $NF}')
+
+if [[ -z "$codigo" ]]; then
+
+echo -e "${RED}Link inválido${RESET}"
+
+else
+
+template="https://discord.new/$codigo"
+
+echo ""
+echo -e "${GREEN}Template gerado:${RESET}"
+echo "$template"
+
+fi
+
+echo ""
+read -p "Enter para voltar..."
+
+}
+
 # ===== Geradores =====
+
 gerar_cpf() {
     n1=$((RANDOM%10)); n2=$((RANDOM%10)); n3=$((RANDOM%10))
     n4=$((RANDOM%10)); n5=$((RANDOM%10)); n6=$((RANDOM%10))
@@ -104,7 +163,6 @@ gerar_senha() {
     fi
 }
 
-# ===== Anti-DDOS simples =====
 check_ip() {
     ip=$1
     ping -c 1 $ip &>/dev/null
@@ -117,10 +175,15 @@ check_ip() {
     fi
 }
 
+# ===== INICIAR LOGIN =====
+
+login
+
 # ===== Loop do Menu =====
 while true; do
     loading_menu
     banner
+
     echo -e "${CYAN}===== CONSULTAS =====${RESET}"
     echo "[01] CPF"
     echo "[02] CNPJ"
@@ -147,6 +210,7 @@ while true; do
     echo "[31] Traceroute"
     echo "[32] Subdomain Finder"
     echo "[33] Salvar resultado"
+    echo "[34] Gerar Template Discord"
 
     echo ""
     echo -e "${RED}===== SISTEMA =====${RESET}"
@@ -155,52 +219,15 @@ while true; do
     echo "[99] Sair"
 
     read -p "Escolha uma opção: " opcao
+
     case $opcao in
-        01) read -p "CPF: " cpf
-            curl -s -X GET "https://apicpf.com/api/consulta?cpf=$cpf" -H "X-API-KEY: $CPF_KEY"
-            read -p "Enter para voltar...";;
-        02) read -p "CNPJ: " cnpj
-            curl -s "https://brasilapi.com.br/api/cnpj/v1/$cnpj"
-            read -p "Enter para voltar...";;
-        03) gerar_rg; read -p "Enter para voltar...";;
-        04) read -p "Telefone (+55DDDNUM): " tel
-            read -p "Chave AbstractAPI: " chave
-            curl -s "https://phonevalidation.abstractapi.com/v1/?api_key=$chave&phone=$tel"
-            read -p "Enter para voltar...";;
-        05) read -p "CEP: " cep
-            curl -s "https://cep.awesomeapi.com.br/json/$cep"
-            read -p "Enter para voltar...";;
-        06) read -p "IP: " ip
-            check_ip $ip && curl -s "http://ip-api.com/json/$ip"
-            read -p "Enter para voltar...";;
-        07) read -p "DDD: " ddd
-            curl -s "https://brasilapi.com.br/api/ddd/v1/$ddd"
-            read -p "Enter para voltar...";;
-        08) read -p "Dominio: " domain
-            curl -s "https://api.apilayer.com/whois?domain=$domain&apikey=$CPF_KEY"
-            read -p "Enter para voltar...";;
-        09) read -p "Dominio: " domain
-            nslookup $domain
-            read -p "Enter para voltar...";;
-        10) read -p "IP/Host: " ip
-            ping -c 4 $ip
-            read -p "Enter para voltar...";;
-        11) read -p "IP/Host: " ip
-            nmap $ip
-            read -p "Enter para voltar...";;
-        12) read -p "Nome de usuário base: " user
-            echo "$user$(($RANDOM%9999))"
-            read -p "Enter para voltar...";;
-        21) gerar_cpf; read -p "Enter para voltar...";;
-        22) gerar_cnpj; read -p "Enter para voltar...";;
-        23) gerar_rg; read -p "Enter para voltar...";;
-        24) gerar_senha; read -p "Enter para voltar...";;
-        31) read -p "IP/Host: " host; traceroute $host; read -p "Enter para voltar...";;
-        32) read -p "Dominio: " domain; subfinder -d $domain; read -p "Enter para voltar...";;
-        33) read -p "Nome do arquivo: " file; read -p "Conteúdo para salvar: " conteudo; echo "$conteudo" > $file; echo "Salvo em $file"; read -p "Enter...";;
-        96) pkg update -y && pkg upgrade -y; read -p "Enter...";;
-        97) echo "Telegram: @Kyara"; echo "Discord: Erro404#0001"; read -p "Enter...";;
+
+        34) gerar_template;;
+
         99) exit;;
+
         *) echo -e "${RED}Opção inválida${RESET}"; read -p "Enter...";;
+
     esac
+
 done
