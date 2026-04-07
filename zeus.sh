@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # =========================
-# ZEUS SEARCH v3.3 FULL
+# ZEUS SEARCH v3.4 FULL
 # =========================
 
 RED="\033[1;31m"
 GREEN="\033[1;32m"
 YELLOW="\033[1;33m"
-RESET="\033[0m"
 CYAN="\033[1;36m"
+RESET="\033[0m"
 
 LOG="logs.txt"
 CPF_KEY="a226a8a6d4b5eab60686baab5a424d4cf3a25d0c6f9e72172eb99cfc6de3b5a6"
@@ -18,13 +18,16 @@ CPF_KEY="a226a8a6d4b5eab60686baab5a424d4cf3a25d0c6f9e72172eb99cfc6de3b5a6"
 # =========================
 boot() {
     clear
-    echo -e "${RED}"
-    echo "Inicializando ZEUS..."
-    for i in 10 30 50 70 90 100; do
-        echo -ne "Carregando: $i% \r"
-        sleep 0.4
+    echo -e "${RED}Inicializando ZEUS..."
+    
+    # Barra de loading animada
+    for i in $(seq 1 20); do
+        barra=$(printf "%0.s#" $(seq 1 $i))
+        printf "\r[%s%-20s] %d%%" "$barra" "" $((i*5))
+        sleep 0.1
     done
-    sleep 1
+    echo ""
+    sleep 0.5
 }
 
 # =========================
@@ -70,15 +73,44 @@ criar_usuario() {
 }
 
 # =========================
-# BANNER
+# BANNER COM CAVEIRA ANIMADA
 # =========================
 banner() {
     clear
     echo -e "${RED}"
-    echo "        <^\()/^>"
-    echo "         \/  \/"
-    echo "          /  \\"
-    echo "          \`\`\`"
+    
+    skull_frames=(
+"______
+     .-        -.
+    /            \\
+   |,  .-.  .-.  ,|
+   | )(_o/  \\o_)( |
+   |/     /\\     \\|
+   (_     ^^     _)
+    \\__|IIIIII|__/
+     | \\IIIIII/ |
+     \\          /
+      \`--------\`"
+
+"______
+     .-        -.
+    /            \\
+   |,  .-.  .-.  ,|
+   | )(_O/  \\O_)( |
+   |/     /\\     \\|
+   (_     ^^     _)
+    \\__|IIIIII|__/
+     | \\IIIIII/ |
+     \\          /
+      \`--------\`"
+    )
+
+    for i in {1..4}; do
+        clear
+        echo -e "${RED}${skull_frames[$((i%2))]}"
+        sleep 0.3
+    done
+
     echo ""
     echo "███████╗███████╗██╗   ██╗███████╗"
     echo "╚══███╔╝██╔════╝██║   ██║██╔════╝"
@@ -87,12 +119,12 @@ banner() {
     echo "███████╗███████╗╚██████╔╝███████║"
     echo "╚══════╝╚══════╝ ╚═════╝ ╚══════╝"
     echo ""
-    echo "👼 ZEUS SEARCH v3 [PoweredBy & cypherlock & erro404]"
+    echo "💀 ZEUS SEARCH v3.4 [PoweredBy & cypherlock & erro404]"
     echo ""
 }
 
 # =========================
-# JSON CHECK
+# FUNÇÃO JSON
 # =========================
 exibir_json() {
     if command -v jq &>/dev/null; then
@@ -235,7 +267,6 @@ gerar_rg() {
 }
 
 gerar_senha() {
-    # Substituindo openssl por /dev/urandom
     senha=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 12)
     echo "$senha"
     logar "SENHA GERADA"
