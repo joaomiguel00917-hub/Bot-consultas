@@ -1,0 +1,206 @@
+#!/bin/bash
+# ZEUS HUB v1.3 - Painel completo
+# Autor: Kyara & Erro404
+# Data: 2026-04-07
+
+# ===== Cores =====
+RED="\033[1;31m"
+GREEN="\033[1;32m"
+YELLOW="\033[1;33m"
+BLUE="\033[1;34m"
+CYAN="\033[1;36m"
+MAGENTA="\033[1;35m"
+RESET="\033[0m"
+
+# ===== Chaves =====
+CPF_KEY="a226a8a6d4b5eab60686baab5a424d4cf3a25d0c6f9e72172eb99cfc6de3b5a6"
+
+# ===== Funções =====
+
+# Linha animada
+linha_animada() {
+    for i in {1..50}; do
+        echo -ne "${RED}─${RESET}"
+        sleep 0.01
+    done
+    echo ""
+}
+
+# Digitar efeito
+digitar() {
+    texto=$1
+    cor=$2
+    for ((i=0; i<${#texto}; i++)); do
+        echo -ne "${cor}${texto:$i:1}${RESET}"
+        sleep 0.05
+    done
+    echo ""
+}
+
+# Loading antes do menu
+loading_menu() {
+    echo -ne "${CYAN}Carregando ZEUS HUB"
+    for i in {1..5}; do
+        echo -ne "."
+        sleep 0.3
+    done
+    echo ""
+    sleep 0.2
+}
+
+# Banner ZEUS com sombra
+banner() {
+    clear
+    linha_animada
+    digitar "CONSULTAS ZEUS TERMINAL" $YELLOW
+    digitar "Desenvolvido por [KYARA] e [ERRO404]" $CYAN
+    linha_animada
+    echo ""
+
+    # Banner ZEUS
+    echo -e "${CYAN}███████╗███████╗██╗   ██╗███████╗${RESET}"
+    echo -e "${CYAN}╚══███╔╝██╔════╝██║   ██║██╔════╝${RESET}${BLUE}  ██║   ██║██╔════╝${RESET}"
+    echo -e "${CYAN}  ███╔╝ █████╗  ██║   ██║███████╗${RESET}${BLUE}  ██║   ██║███████╗${RESET}"
+    echo -e "${CYAN} ███╔╝  ██╔══╝  ██║   ██║╚════██║${RESET}${BLUE}  ██║   ██║╚════██║${RESET}"
+    echo -e "${CYAN}███████╗███████╗╚██████╔╝███████║${RESET}${BLUE}╚██████╔╝███████║${RESET}"
+    echo -e "${CYAN}╚══════╝╚══════╝ ╚═════╝ ╚══════╝${RESET}${BLUE} ╚═════╝ ╚══════╝${RESET}"
+    echo -e "${YELLOW}🔥 ZEUS HUB - Termux 🔥${RESET}"
+    linha_animada
+}
+
+# ===== Geradores =====
+gerar_cpf() {
+    n1=$((RANDOM%10)); n2=$((RANDOM%10)); n3=$((RANDOM%10))
+    n4=$((RANDOM%10)); n5=$((RANDOM%10)); n6=$((RANDOM%10))
+    n7=$((RANDOM%10)); n8=$((RANDOM%10)); n9=$((RANDOM%10))
+    d1=$(( (10*n1+9*n2+8*n3+7*n4+6*n5+5*n6+4*n7+3*n8+2*n9)%11 ))
+    [ $d1 -ge 10 ] && d1=0
+    d2=$(( (11*n1+10*n2+9*n3+8*n4+7*n5+6*n6+5*n7+4*n8+3*n9+2*d1)%11 ))
+    [ $d2 -ge 10 ] && d2=0
+    echo "$n1$n2$n3.$n4$n5$n6.$n7$n8$n9-$d1$d2"
+}
+
+gerar_cnpj() {
+    n1=$((RANDOM%10)); n2=$((RANDOM%10)); n3=$((RANDOM%10)); n4=$((RANDOM%10))
+    n5=$((RANDOM%10)); n6=$((RANDOM%10)); n7=$((RANDOM%10)); n8=$((RANDOM%10))
+    n9=$((RANDOM%10)); n10=$((RANDOM%10)); n11=$((RANDOM%10)); n12=$((RANDOM%10))
+    d1=$(( (5*n1+4*n2+3*n3+2*n4+9*n5+8*n6+7*n7+6*n8+5*n9+4*n10+3*n11+2*n12)%11 ))
+    [ $d1 -ge 10 ] && d1=0
+    d2=$(( (6*n1+5*n2+4*n3+3*n4+2*n5+9*n6+8*n7+7*n8+6*n9+5*n10+4*n11+3*n12+2*d1)%11 ))
+    [ $d2 -ge 10 ] && d2=0
+    echo "$n1$n2.$n3$n4$n5.$n6$n7$n8/$n9$n10$n11$n12-$d1$d2"
+}
+
+gerar_rg() {
+    read -p "Digite a base RG: " rg
+    echo "$rg-$(($RANDOM%9999))"
+}
+
+gerar_senha() {
+    if command -v openssl >/dev/null 2>&1; then
+        openssl rand -base64 12
+    else
+        echo -e "${RED}OpenSSL não encontrado. Instale com: pkg install openssl${RESET}"
+    fi
+}
+
+# ===== Anti-DDOS simples =====
+check_ip() {
+    ip=$1
+    ping -c 1 $ip &>/dev/null
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}IP ativo${RESET}"
+        return 0
+    else
+        echo -e "${RED}IP inativo ou bloqueado${RESET}"
+        return 1
+    fi
+}
+
+# ===== Loop do Menu =====
+while true; do
+    loading_menu
+    banner
+    echo -e "${CYAN}===== CONSULTAS =====${RESET}"
+    echo "[01] CPF"
+    echo "[02] CNPJ"
+    echo "[03] RG (simulado)"
+    echo "[04] Telefone"
+    echo "[05] CEP"
+    echo "[06] IP"
+    echo "[07] DDD"
+    echo "[08] Whois"
+    echo "[09] DNS"
+    echo "[10] Ping"
+    echo "[11] Port Check"
+    echo "[12] Username Generator"
+
+    echo ""
+    echo -e "${YELLOW}===== GERADORES =====${RESET}"
+    echo "[21] Gerar CPF"
+    echo "[22] Gerar CNPJ"
+    echo "[23] Gerar RG"
+    echo "[24] Gerar senha forte"
+
+    echo ""
+    echo -e "${GREEN}===== UTILIDADES =====${RESET}"
+    echo "[31] Traceroute"
+    echo "[32] Subdomain Finder"
+    echo "[33] Salvar resultado"
+
+    echo ""
+    echo -e "${RED}===== SISTEMA =====${RESET}"
+    echo "[96] Atualizar"
+    echo "[97] Contato"
+    echo "[99] Sair"
+
+    read -p "Escolha uma opção: " opcao
+    case $opcao in
+        01) read -p "CPF: " cpf
+            curl -s -X GET "https://apicpf.com/api/consulta?cpf=$cpf" -H "X-API-KEY: $CPF_KEY"
+            read -p "Enter para voltar...";;
+        02) read -p "CNPJ: " cnpj
+            curl -s "https://brasilapi.com.br/api/cnpj/v1/$cnpj"
+            read -p "Enter para voltar...";;
+        03) gerar_rg; read -p "Enter para voltar...";;
+        04) read -p "Telefone (+55DDDNUM): " tel
+            read -p "Chave AbstractAPI: " chave
+            curl -s "https://phonevalidation.abstractapi.com/v1/?api_key=$chave&phone=$tel"
+            read -p "Enter para voltar...";;
+        05) read -p "CEP: " cep
+            curl -s "https://cep.awesomeapi.com.br/json/$cep"
+            read -p "Enter para voltar...";;
+        06) read -p "IP: " ip
+            check_ip $ip && curl -s "http://ip-api.com/json/$ip"
+            read -p "Enter para voltar...";;
+        07) read -p "DDD: " ddd
+            curl -s "https://brasilapi.com.br/api/ddd/v1/$ddd"
+            read -p "Enter para voltar...";;
+        08) read -p "Dominio: " domain
+            curl -s "https://api.apilayer.com/whois?domain=$domain&apikey=$CPF_KEY"
+            read -p "Enter para voltar...";;
+        09) read -p "Dominio: " domain
+            nslookup $domain
+            read -p "Enter para voltar...";;
+        10) read -p "IP/Host: " ip
+            ping -c 4 $ip
+            read -p "Enter para voltar...";;
+        11) read -p "IP/Host: " ip
+            nmap $ip
+            read -p "Enter para voltar...";;
+        12) read -p "Nome de usuário base: " user
+            echo "$user$(($RANDOM%9999))"
+            read -p "Enter para voltar...";;
+        21) gerar_cpf; read -p "Enter para voltar...";;
+        22) gerar_cnpj; read -p "Enter para voltar...";;
+        23) gerar_rg; read -p "Enter para voltar...";;
+        24) gerar_senha; read -p "Enter para voltar...";;
+        31) read -p "IP/Host: " host; traceroute $host; read -p "Enter para voltar...";;
+        32) read -p "Dominio: " domain; subfinder -d $domain; read -p "Enter para voltar...";;
+        33) read -p "Nome do arquivo: " file; read -p "Conteúdo para salvar: " conteudo; echo "$conteudo" > $file; echo "Salvo em $file"; read -p "Enter...";;
+        96) pkg update -y && pkg upgrade -y; read -p "Enter...";;
+        97) echo "Telegram: @Kyara"; echo "Discord: Erro404#0001"; read -p "Enter...";;
+        99) exit;;
+        *) echo -e "${RED}Opção inválida${RESET}"; read -p "Enter...";;
+    esac
+done
