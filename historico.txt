@@ -1,0 +1,39 @@
+=== consulta ===
+code: 200
+data: [object Object]
+
+=== CPF ===
+cpf: 44560490813
+nome: Victor Teixeira Guedes
+genero: M
+data_nascimento: 2005-04-28
+
+=== CEP ===
+cep: 01001000
+address_type: Praça
+address_name: da Sé
+address: Praça da Sé
+state: SP
+district: Sé
+lat: -23.5500806
+lng: -46.6340827
+city: São Paulo
+city_ibge: 3550308
+ddd: 11
+
+=== IP ===
+status: success
+country: United States
+countryCode: US
+region: VA
+regionName: Virginia
+city: Ashburn
+zip: 20149
+lat: 39.03
+lon: -77.5
+timezone: America/New_York
+isp: Google LLC
+org: Google Public DNS
+as: AS15169 Google LLC
+query: 8.8.8.8
+

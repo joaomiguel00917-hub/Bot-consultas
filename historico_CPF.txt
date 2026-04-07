@@ -1,0 +1,40 @@
+=== CPF ===
+cpf: 44560490813
+nome: Victor Teixeira Guedes
+genero: M
+data_nascimento: 2005-04-28
+
+{
+  "code": 200,
+  "data": {
+    "cpf": "44560490813",
+    "nome": "Victor Teixeira Guedes",
+    "genero": "M",
+    "data_nascimento": "2005-04-28"
+  }
+}
+
+{
+  "cpf": "44560490813",
+  "nome": "Victor Teixeira Guedes",
+  "genero": "M",
+  "data_nascimento": "2005-04-28"
+}
+
+{
+  "cpf": "44560490813",
+  "nome": "Victor Teixeira Guedes",
+  "genero": "M",
+  "data_nascimento": "2005-04-28"
+}
+
+{
+  "code": 200,
+  "data": {
+    "cpf": "44560490813",
+    "nome": "Victor Teixeira Guedes",
+    "genero": "M",
+    "data_nascimento": "2005-04-28"
+  }
+}
+
