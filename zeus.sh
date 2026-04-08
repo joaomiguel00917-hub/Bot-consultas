@@ -18,7 +18,7 @@ CPF_KEY="a226a8a6d4b5eab60686baab5a424d4cf3a25d0c6f9e72172eb99cfc6de3b5a6"
 # =========================
 boot() {
     clear
-    echo -e "${RED}Inicializando ZEUS..."
+    echo -e "${RED}iniciando aguarde..."
     
     # Barra de loading animada
     for i in $(seq 1 20); do
@@ -43,11 +43,11 @@ logar() {
 login() {
     while true; do
         clear
-        echo -e "${RED}🔐 LOGIN ZEUS SEARCH${RESET}"
+        echo -e "${RED}🔐 LOGIN ZEUS SEARCH pegar login:https://discord.gg/smvXJCDsR${RESET}"
         read -p "Usuário: " user
         read -s -p "Senha: " pass
         echo ""
-        if grep -q "^$user:$pass$" users.txt; then
+        if grep -q "^$user:$pass$" tetser; then
             echo -e "${GREEN}Acesso permitido${RESET}"
             logar "LOGIN OK - $user"
             sleep 1
